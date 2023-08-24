@@ -2,6 +2,7 @@
 pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
+import "./achievement.sol";
 
 contract game_name {
 
@@ -17,6 +18,13 @@ contract game_name {
     }
 
     Game[] public games;
+
+    mapping(address => uint) winners;
+    achievement Achievement;
+
+    constructor(address contract_achievement){
+        Achievement = achievement(contract_achievement);
+    }
 
     function start_game(address player2, uint horizontal, uint vertical) public returns(uint){
         
@@ -73,14 +81,6 @@ contract game_name {
         uint player1_position = 1;
 
         uint player2_position = 2;
-
-        for(uint x = 1; x<4; x++){
-            for(uint y = 1; y<4; y++){
-                if((games[id_game].moves[x][y])== (player1_position)){
-                    
-                }
-            }
-        }
             
                 if(
                     games[id_game].moves[1][1] == player1_position && 
@@ -104,12 +104,16 @@ contract game_name {
                     games[id_game].moves[1][3] == player1_position
                     
                     ){
-                        // is_game_over = true;
+                        
                         games[id_game].has_winner = true;
                         games[id_game].winner = msg.sender;
                         games[id_game].winner_name = "player1 is the winner";
-                        // require(games[id_game].status == true, "player 1 is the winner");
-                        // return is_game_over;
+                        winners[games[id_game].winner]++;
+                        if(winners[games[id_game].winner] == 5){
+                            Achievement.achievement_minter(games[id_game].winner);
+                        }
+
+                        
                 } 
                 
                 if(
