@@ -50,7 +50,7 @@ contract game_name {
     function make_moves(uint id_game, uint horizontal, uint vertical) public {
             require(games[id_game].has_winner == false, games[id_game].winner_name);
 
-            require(games[id_game].number_moves < 9, "the Board it's full Game Over");
+            require(games[id_game].number_moves < 10, "the Board it's full Game Over");
             
             require(games[id_game].player1 == msg.sender || games[id_game].player2 == msg.sender, 
             'you arent a player');
@@ -109,12 +109,15 @@ contract game_name {
                         games[id_game].winner = msg.sender;
                         games[id_game].winner_name = "player1 is the winner";
                         winners[games[id_game].winner]++;
+
                         if(winners[games[id_game].winner] == 5){
                             Achievement.achievement_minter(games[id_game].winner);
                         }
+                        if(games[id_game].number_moves < 8){
+                            Achievement.achievement_minter(games[id_game].winner);
+                        }
 
-                        
-                } 
+                }   
                 
                 if(
                     games[id_game].moves[1][1] == player2_position && 
@@ -143,10 +146,14 @@ contract game_name {
                         games[id_game].has_winner = true;
                         games[id_game].winner = msg.sender;
                         games[id_game].winner_name = "player2 is the winner";
+                        winners[games[id_game].winner]++;
 
-                        // require(games[id_game].status == true, "player 2 is the winner");
-
-                        // return is_game_over;
+                        if(winners[games[id_game].winner] == 5){
+                            Achievement.achievement_minter(games[id_game].winner);
+                        }
+                        if(games[id_game].number_moves < 8){
+                            Achievement.achievement_minter(games[id_game].winner);
+                        }
                 } 
             
             
