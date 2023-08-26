@@ -3,6 +3,7 @@ pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
 import "./achievement.sol";
+import "./coin.sol";
 
 contract game_name {
 
@@ -20,10 +21,12 @@ contract game_name {
     Game[] public games;
 
     mapping(address => uint) winners;
-    achievement Achievement;
+    Achievement achievement;
+    Coin coin;
 
-    constructor(address contract_achievement){
-        Achievement = achievement(contract_achievement);
+    constructor(address contract_achievement, address contract_coin){
+        achievement = Achievement(contract_achievement);
+        coin = Coin(contract_coin);
     }
 
     function start_game(address player2, uint horizontal, uint vertical) public returns(uint){
@@ -78,87 +81,97 @@ contract game_name {
     }     
 
     function it_is_winner(uint id_game) private {
-        uint player1_position = 1;
-
-        uint player2_position = 2;
+        uint player_position = 1;
+        
+        if(msg.sender == games[id_game].player2){
+            player_position = 2;
+        }
+        
             
                 if(
-                    games[id_game].moves[1][1] == player1_position && 
-                    games[id_game].moves[1][2] == player1_position &&
-                    games[id_game].moves[1][3] == player1_position
+                    games[id_game].moves[1][1] == player_position && 
+                    games[id_game].moves[1][2] == player_position &&
+                    games[id_game].moves[1][3] == player_position
                     ||
-                    games[id_game].moves[2][1] == player1_position && 
-                    games[id_game].moves[2][2] == player1_position &&
-                    games[id_game].moves[2][3] == player1_position
+                    games[id_game].moves[2][1] == player_position && 
+                    games[id_game].moves[2][2] == player_position &&
+                    games[id_game].moves[2][3] == player_position
                     ||
-                    games[id_game].moves[3][1] == player1_position && 
-                    games[id_game].moves[3][2] == player1_position &&
-                    games[id_game].moves[3][3] == player1_position
+                    games[id_game].moves[3][1] == player_position && 
+                    games[id_game].moves[3][2] == player_position &&
+                    games[id_game].moves[3][3] == player_position
                     ||
-                    games[id_game].moves[1][1] == player1_position && 
-                    games[id_game].moves[2][2] == player1_position &&
-                    games[id_game].moves[3][3] == player1_position 
+                    games[id_game].moves[1][1] == player_position && 
+                    games[id_game].moves[2][2] == player_position &&
+                    games[id_game].moves[3][3] == player_position 
                     ||
-                    games[id_game].moves[3][1] == player1_position && 
-                    games[id_game].moves[2][2] == player1_position &&
-                    games[id_game].moves[1][3] == player1_position
+                    games[id_game].moves[3][1] == player_position && 
+                    games[id_game].moves[2][2] == player_position &&
+                    games[id_game].moves[1][3] == player_position
                     
                     ){
                         
                         games[id_game].has_winner = true;
                         games[id_game].winner = msg.sender;
                         games[id_game].winner_name = "player1 is the winner";
+
+                        if(msg.sender == games[id_game].player2){
+                            games[id_game].winner_name = "player2 is the winner";
+                        }
+                        
                         winners[games[id_game].winner]++;
+                        coin.minter( games[id_game].winner ,1);
+
+                        if(games[id_game].number_moves < 8){
+                            achievement.achievement_minter(games[id_game].winner);
+                            coin.minter( games[id_game].winner ,1);
+                        }
 
                         if(winners[games[id_game].winner] == 5){
-                            Achievement.achievement_minter(games[id_game].winner);
+                            achievement.achievement_minter(games[id_game].winner);
+                            coin.minter( games[id_game].winner ,2);
+
                         }
-                        if(games[id_game].number_moves < 8){
-                            Achievement.achievement_minter(games[id_game].winner);
-                        }
+                        
 
                 }   
                 
-                if(
-                    games[id_game].moves[1][1] == player2_position && 
-                    games[id_game].moves[1][2] == player2_position &&
-                    games[id_game].moves[1][3] == player2_position
-                    ||
-                    games[id_game].moves[2][1] == player2_position && 
-                    games[id_game].moves[2][2] == player2_position &&
-                    games[id_game].moves[2][3] == player2_position
-                    ||
-                    games[id_game].moves[3][1] == player2_position && 
-                    games[id_game].moves[3][2] == player2_position &&
-                    games[id_game].moves[3][3] == player2_position
-                    ||
-                    games[id_game].moves[1][1] == player2_position && 
-                    games[id_game].moves[2][2] == player2_position &&
-                    games[id_game].moves[3][3] == player2_position 
-                    ||
-                    games[id_game].moves[3][1] == player2_position && 
-                    games[id_game].moves[2][2] == player2_position &&
-                    games[id_game].moves[1][3] == player2_position
+                // if(
+                //     games[id_game].moves[1][1] == player2_position && 
+                //     games[id_game].moves[1][2] == player2_position &&
+                //     games[id_game].moves[1][3] == player2_position
+                //     ||
+                //     games[id_game].moves[2][1] == player2_position && 
+                //     games[id_game].moves[2][2] == player2_position &&
+                //     games[id_game].moves[2][3] == player2_position
+                //     ||
+                //     games[id_game].moves[3][1] == player2_position && 
+                //     games[id_game].moves[3][2] == player2_position &&
+                //     games[id_game].moves[3][3] == player2_position
+                //     ||
+                //     games[id_game].moves[1][1] == player2_position && 
+                //     games[id_game].moves[2][2] == player2_position &&
+                //     games[id_game].moves[3][3] == player2_position 
+                //     ||
+                //     games[id_game].moves[3][1] == player2_position && 
+                //     games[id_game].moves[2][2] == player2_position &&
+                //     games[id_game].moves[1][3] == player2_position
                     
                     
-                    ){
-                        // is_game_over = true;
-                        games[id_game].has_winner = true;
-                        games[id_game].winner = msg.sender;
-                        games[id_game].winner_name = "player2 is the winner";
-                        winners[games[id_game].winner]++;
+                //     ){
+                //         // is_game_over = true;
+                //         games[id_game].has_winner = true;
+                //         games[id_game].winner = msg.sender;
+                //         games[id_game].winner_name = "player2 is the winner";
+                //         winners[games[id_game].winner]++;
 
-                        if(winners[games[id_game].winner] == 5){
-                            Achievement.achievement_minter(games[id_game].winner);
-                        }
-                        if(games[id_game].number_moves < 8){
-                            Achievement.achievement_minter(games[id_game].winner);
-                        }
-                } 
-            
-            
-        
-
+                //         if(winners[games[id_game].winner] == 5){
+                //             Achievement.achievement_minter(games[id_game].winner);
+                //         }
+                //         if(games[id_game].number_moves < 8){
+                //             Achievement.achievement_minter(games[id_game].winner);
+                //         }
+                // } 
     }
 
 }
