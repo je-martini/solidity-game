@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract achievement is ERC721("Token Achievement","ta"), Ownable {
+contract Achievement is ERC721("Token Achievement","ta"), Ownable {
 
     uint last_index; 
 

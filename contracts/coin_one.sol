@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract achievement is ERC20("Token Coin","tc"), Ownable {
+contract Coin_one is ERC20("Token Coin","tc"), Ownable {
 
 
     function minter(address to_send, uint quatity) public onlyOwner{

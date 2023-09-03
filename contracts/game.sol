@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
 import "./achievement.sol";
-import "./coin.sol";
+import "./coin_one.sol";
 
 contract game_name {
 
@@ -22,11 +23,11 @@ contract game_name {
 
     mapping(address => uint) winners;
     Achievement achievement;
-    Coin coin;
+    Coin_one coin_one;
 
     constructor(address contract_achievement, address contract_coin){
         achievement = Achievement(contract_achievement);
-        coin = Coin(contract_coin);
+        coin_one = Coin_one(contract_coin);
     }
 
     function start_game(address player2, uint horizontal, uint vertical) public returns(uint){
@@ -120,16 +121,16 @@ contract game_name {
                         }
                         
                         winners[games[id_game].winner]++;
-                        coin.minter( games[id_game].winner ,1);
+                        coin_one.minter( games[id_game].winner ,1);
 
                         if(games[id_game].number_moves < 8){
                             achievement.achievement_minter(games[id_game].winner);
-                            coin.minter( games[id_game].winner ,1);
+                            coin_one.minter( games[id_game].winner ,1);
                         }
 
                         if(winners[games[id_game].winner] == 5){
                             achievement.achievement_minter(games[id_game].winner);
-                            coin.minter( games[id_game].winner ,2);
+                            coin_one.minter( games[id_game].winner ,2);
 
                         }
                         
