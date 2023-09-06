@@ -5,8 +5,10 @@ pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 import "./achievement.sol";
 import "./coin_one.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
-contract game_name {
+contract game_name is VRFConsumerBaseV2{
 
     struct Game {
         address player1;
@@ -17,17 +19,24 @@ contract game_name {
         uint number_moves;
         address last_move;
         bool has_winner;
+        
     }
 
     Game[] public games;
-
+    mapping(uint => uint) games_request;
     mapping(address => uint) winners;
     Achievement achievement;
     Coin_one coin_one;
+    VRFCoordinatorV2Interface coordinator;
+    uint64 subscriptions_id;
 
-    constructor(address contract_achievement, address contract_coin){
+    constructor(address contract_achievement, address contract_coin, uint subcr_id, address coordinator_)
+    VRFConsumerBaseV2(coordinator_)
+    {
         achievement = Achievement(contract_achievement);
         coin_one = Coin_one(contract_coin);
+        coordinator = VRFCoordinatorV2Interface(coordinator_);
+        subscriptions_id = subcr_id;
     }
 
     function start_game(address player2, uint horizontal, uint vertical) public returns(uint){
@@ -43,12 +52,29 @@ contract game_name {
         game.last_move = msg.sender;
         game.moves[horizontal][vertical] = 1;
         game.number_moves = game.number_moves + 1;
-
+        
+        uint requestId = coordinator.requestRandomWords(
+            0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
+            subscriptions_id,
+            3,
+            100000,
+            1
+        );
+        
+        games_request[requestId]= game;
 
         games.push(game);
 
         return id_game;
         
+    }
+
+    function fulfillRandomWords(
+        uint256 _requestId,
+        uint256[] memory _randomWords
+    ) internal override {
+        uint game_id = games_request[_requestId];
+
     }
 
     function make_moves(uint id_game, uint horizontal, uint vertical) public {
