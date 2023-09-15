@@ -30,7 +30,7 @@ contract game_name is VRFConsumerBaseV2{
     VRFCoordinatorV2Interface coordinator;
     uint64 subscriptions_id;
 
-    constructor(address contract_achievement, address contract_coin, uint subcr_id, address coordinator_)
+    constructor(address contract_achievement, address contract_coin, uint64 subcr_id, address coordinator_)
     VRFConsumerBaseV2(coordinator_)
     {
         achievement = Achievement(contract_achievement);
@@ -75,6 +75,7 @@ contract game_name is VRFConsumerBaseV2{
     ) internal override {
         uint game_id = games_request[_requestId];
 
+        
     }
 
     function make_moves(uint id_game, uint horizontal, uint vertical) public {
@@ -161,44 +162,7 @@ contract game_name is VRFConsumerBaseV2{
                         }
                         
 
-                }   
-                
-                // if(
-                //     games[id_game].moves[1][1] == player2_position && 
-                //     games[id_game].moves[1][2] == player2_position &&
-                //     games[id_game].moves[1][3] == player2_position
-                //     ||
-                //     games[id_game].moves[2][1] == player2_position && 
-                //     games[id_game].moves[2][2] == player2_position &&
-                //     games[id_game].moves[2][3] == player2_position
-                //     ||
-                //     games[id_game].moves[3][1] == player2_position && 
-                //     games[id_game].moves[3][2] == player2_position &&
-                //     games[id_game].moves[3][3] == player2_position
-                //     ||
-                //     games[id_game].moves[1][1] == player2_position && 
-                //     games[id_game].moves[2][2] == player2_position &&
-                //     games[id_game].moves[3][3] == player2_position 
-                //     ||
-                //     games[id_game].moves[3][1] == player2_position && 
-                //     games[id_game].moves[2][2] == player2_position &&
-                //     games[id_game].moves[1][3] == player2_position
-                    
-                    
-                //     ){
-                //         // is_game_over = true;
-                //         games[id_game].has_winner = true;
-                //         games[id_game].winner = msg.sender;
-                //         games[id_game].winner_name = "player2 is the winner";
-                //         winners[games[id_game].winner]++;
-
-                //         if(winners[games[id_game].winner] == 5){
-                //             Achievement.achievement_minter(games[id_game].winner);
-                //         }
-                //         if(games[id_game].number_moves < 8){
-                //             Achievement.achievement_minter(games[id_game].winner);
-                //         }
-                // } 
+                }         
     }
 
 }
