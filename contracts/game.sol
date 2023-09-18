@@ -61,7 +61,7 @@ contract game_name is VRFConsumerBaseV2{
             1
         );
         
-        games_request[requestId]= game;
+        games_request[requestId]= id_game;
 
         games.push(game);
 
