@@ -27,10 +27,10 @@ contract marketplace is Ownable {
 
         values[token_id] = value;
     
-        postor[toke_id] = msg.sender;
+        postor[token_id] = msg.sender;
     }
 
-    function finish_transaction(uint token_id) public OnlyOwner {
+    function finish_transaction(uint token_id) public onlyOwner {
         require(values[token_id] > 0);
         require(coin_one.allowance(postor[token_id], address(this)) > values[token_id]);
         require(achievement.getApproved(token_id) == address(this));
